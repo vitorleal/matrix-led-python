@@ -1,6 +1,6 @@
 CXXFLAGS=-Wall -O3 -g
 OBJECTS=demo-main.o minimal-example.o text-example.o led-image-viewer.o
-BINARIES=led-matrix minimal-example text-example
+BINARIES=led-matrix minimal-example text-example rgbmatrix.so
 ALL_BINARIES=$(BINARIES) led-image-viewer
 
 # Where our library resides. It is split between includes and the binary
@@ -31,6 +31,10 @@ text-example : text-example.o $(RGB_LIBRARY)
 
 led-image-viewer: led-image-viewer.o $(RGB_LIBRARY)
 	$(CXX) $(CXXFLAGS) led-image-viewer.o -o $@ $(LDFLAGS) $(MAGICK_LDFLAGS)
+
+# Python module
+rgbmatrix.so: rgbmatrix.o $(RGB_LIBRARY)
+	$(CXX) -s -shared -lstdc++ -Wl,-soname,librgbmatrix.so -o $@ $< $(LDFLAGS)
 
 %.o : %.cc
 	$(CXX) -I$(RGB_INCDIR) $(CXXFLAGS) -c -o $@ $<
